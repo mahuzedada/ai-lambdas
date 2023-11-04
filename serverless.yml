@@ -1,0 +1,39 @@
+service: ai-lambdas
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-east-1
+  apiGateway:
+    shouldStartNameWithService: true
+
+functions:
+  biteBot:
+    handler: dist/bite-bot/handler.handler
+    timeout: 100
+    events:
+      - http:
+          path: bite-bot/{proxy+}
+          method: any
+          cors: true
+  docBrew:
+    handler: dist/doc-brew/handler.handler
+    timeout: 100
+    events:
+      - http:
+          path: doc-brew/{proxy+}
+          method: any
+          cors: true
+  helpHopper:
+    handler: dist/help-hopper/handler.handler
+    timeout: 100
+    events:
+      - http:
+          path: help-hopper/{proxy+}
+          method: any
+          cors: true
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
