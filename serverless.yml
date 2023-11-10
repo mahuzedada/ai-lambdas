@@ -2,7 +2,7 @@ service: ai-lambdas
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   stage: dev
   region: us-east-1
   apiGateway:
@@ -11,7 +11,7 @@ provider:
 functions:
   biteBot:
     handler: dist/bite-bot/handler.handler
-    timeout: 100
+    timeout: 30
     events:
       - http:
           path: bite-bot/{proxy+}
@@ -19,7 +19,7 @@ functions:
           cors: true
   docBrew:
     handler: dist/doc-brew/handler.handler
-    timeout: 100
+    timeout: 30
     events:
       - http:
           path: doc-brew/{proxy+}
@@ -27,12 +27,26 @@ functions:
           cors: true
   helpHopper:
     handler: dist/help-hopper/handler.handler
-    timeout: 100
+    timeout: 30
     events:
       - http:
           path: help-hopper/{proxy+}
           method: any
           cors: true
+      - alb:
+          listenerArn: arn:aws:elasticloadbalancing:us-east-1:696531004149:listener/app/helpHopperLoadBalancer/86efc00605192553/2daa6c7a751a8cfb
+          priority: 1
+          targetGroupName: hopperTarget
+          conditions:
+            method:
+              - POST
+
+    vpc:
+      securityGroupIds:
+        - sg-0366de03a79d01110
+      subnetIds:
+        - subnet-0e1bedfb14c658ceb
+        - subnet-0e6dd8f0dc355190f
 
 plugins:
   - serverless-offline

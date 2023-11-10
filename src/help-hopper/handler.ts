@@ -8,7 +8,9 @@ const expressApp = express();
 const adapter = new ExpressAdapter(expressApp);
 
 async function bootstrap() {
-  const app = await NestFactory.create(HelpHopperModule, adapter);
+  const app = await NestFactory.create(HelpHopperModule, adapter, {
+    cors: true,
+  });
   await app.init();
 }
 
